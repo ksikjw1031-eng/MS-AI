@@ -3,7 +3,7 @@
 ## 프로젝트명: AI 기반 외부·내부 환경 통합 분석 시스템 (PEST·SWOT Analyzer)    
 
 
-&nbsp; 해당 프로젝트는 전략기획 및 경영기획 업무에 필요한 외부 환경 분석(PEST) 과 내부 환경 분석(SWOT/RAG) 을 Azure OpenAI 와 Bing Search, Azure AI Search를 활용해 자동으로 수행하는 AI 분석 시스템입니다. <br><br>
+&nbsp; 해당 프로젝트는 전략기획 및 경영기획 업무에 필요한 외부 환경 분석(PEST) 과 내부 환경 분석(SWOT/RAG) 을 Azure OpenAI 와 Azure AI Search를 활용해 자동으로 수행하는 AI 분석 시스템입니다. <br><br>
 ## 개요
 1.  외부 환경(시장·기술·정책 등)은 Bing Custom Search Grounding을 통해 최신 뉴스를 수집합니다.
 
