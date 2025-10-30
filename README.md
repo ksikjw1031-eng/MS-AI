@@ -11,3 +11,6 @@
 
 3. 두 정보를 종합하여 기업의 전략적 기회와 위협을 한눈에 파악하고
 KT DS 관점 대응전략까지 자동으로 제안합니다. 
+
+-Link
+proseinkim-102901.azurewebsites.net
