@@ -132,7 +132,8 @@
 ### 🚀 특징 및 확장성
 - **Azure-native RAG 파이프라인**으로 Grounded 분석 수행  
 - **모든 결과를 Streamlit UI에서 시각화**  
-- **향후 On Your Data 및 LangChain 기반 분석 고도화 예정**
+- **향후 On Your Data 및 LangChain 기반 분석 고도화 예정**  
+- **Azure Function / App Service 기반 확장 구조**로 멀티유저·대용량 처리까지 고려
 
 
 
