@@ -8,6 +8,26 @@ from datetime import datetime, timedelta
 from openai import AzureOpenAI
 import config  # config.py
 
+# [추가 — 자사 판별 헬퍼 블록]
+SELF_COMPANY = "KT DS"
+SELF_ALIASES = {"KT DS", "kt ds", "케이티디에스", "KTDS", "케이티 DS", "케이티 디에스"}
+
+def _normalize_name(name: str) -> str:
+    if not name:
+        return ""
+    s = re.sub(r"[^0-9A-Za-z가-힣]", "", name).lower()
+    return s
+
+def is_self_company(company: str) -> bool:
+    n = _normalize_name(company or "")
+    if not n:
+        return True  # company가 비어있다면 기본적으로 자사 관점
+    for alias in SELF_ALIASES | {SELF_COMPANY}:
+        if _normalize_name(alias) == n:
+            return True
+    return False
+
+
 # ===================== 공용 유틸 (JSON) =====================
 def extract_json_str(text: str):
     if not text:
@@ -92,8 +112,15 @@ NEWS_PSWOT_SCHEMA = """
 }
 """.strip()
 
+# [추가 — 자사 판별 헬퍼 블록]
 def build_messages_news(company, techs, domains, news):
-    """뉴스 리스트를 받아 PEST·SWOT JSON을 요청하는 Chat Completions 메시지 구성"""
+    """뉴스 리스트를 받아 PEST·SWOT JSON을 요청하는 Chat Completions 메시지 구성
+       - 자사(=KT DS)일 때 경쟁사처럼 서술되는 오류 방지 규칙 포함
+    """
+    # ① 자사 여부 판단 (utils 상단에 추가한 is_self_company 사용)
+    self_mode = is_self_company(company)
+
+    # ② 표시용 컨텍스트 문자열
     tech_text   = ", ".join(techs) if techs else "N/A"
     domain_text = ", ".join(domains) if domains else "N/A"
     info_lines  = [f"기술: {tech_text}", f"도메인: {domain_text}"]
@@ -101,24 +128,48 @@ def build_messages_news(company, techs, domains, news):
         info_lines.insert(0, f"회사: {company}")
     info_text = "\n".join(info_lines)
 
+    # ③ 뉴스 블록
     news_block = ""
-    for i, n in enumerate(news, 1):
+    for i, n in enumerate(news or [], 1):
         news_block += (
             f"[{i}] {n.get('title','(제목 없음)')} — {n.get('provider','')} — {n.get('datePublished','')}\n"
             f"요약: {n.get('snippet','')}\nURL: {n.get('url','')}\n\n"
         )
 
+    # ④ 자사/타사 규칙
+    if self_mode:
+        persona_rules = (
+            f"- 자사는 '{SELF_COMPANY}'로 정의. 뉴스에 등장하는 '{SELF_COMPANY}'는 곧 자사.\n"
+            f"- '{SELF_COMPANY}'를 경쟁사로 취급 금지. "
+            f"'자사 대비 {SELF_COMPANY}' 같은 표현 금지.\n"
+            f"- 벤치마킹/비교 대상은 '{SELF_COMPANY}'가 아님(경쟁사 또는 개별 타사명으로 표기).\n"
+            f"- 시점은 현재, 어조는 내부 전략 보고서 톤."
+        )
+    else:
+        persona_rules = (
+            f"- 자사는 '{SELF_COMPANY}'. 분석 대상 회사는 '{company}'.\n"
+            f"- '자사'는 항상 '{SELF_COMPANY}'를 의미. '{SELF_COMPANY}'와 '{company}' 혼동 금지.\n"
+            f"- 출력은 자사 관점(= {SELF_COMPANY})에서 '{company}'를 평가."
+        )
+
+    # ⑤ 프롬프트
     user = (
-        f"당신은 전략/기획 전문가입니다. 아래 정보와 뉴스 근거를 기반으로 PEST / SWOT 4사분면용 요약(각 칸 1~2문장)을 JSON으로 작성하세요. "
-        f"분석은 반드시 자사 관점(회사: {company or '자사'})으로.\n\n"
+        "당신은 전략/기획 전문가입니다. 아래 정보와 뉴스 근거를 기반으로 "
+        "PEST / SWOT 4사분면용 요약(각 칸 1~2문장)을 JSON으로 작성하세요.\n"
+        f"{persona_rules}\n\n"
         f"JSON 스키마:\n{NEWS_PSWOT_SCHEMA}\n\n"
-        f"제약:\n- 각 리스트 최대 2문장, 문장 끝 마침표.\n- 필요 시 문장 끝에 (출처:[1]) 허용.\n- JSON 외 텍스트 금지.\n\n"
+        "제약:\n"
+        "- 각 리스트 최대 2문장, 문장 끝 마침표.\n"
+        "- 필요 시 문장 끝에 (출처:[1]) 허용.\n"
+        "- JSON 외 텍스트 금지.\n\n"
         f"컨텍스트:\n{info_text}\n\n=== 뉴스 근거 ===\n{news_block}"
     )
+
     return [
         {"role": "system", "content": "한국어로만 작성. 반드시 JSON만 출력."},
         {"role": "user",   "content": user},
     ]
+
 
 COMBINED_SCHEMA = """
 {
