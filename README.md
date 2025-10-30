@@ -63,23 +63,23 @@
 
 ## 4. 시스템 동작 흐름 (System Workflow)
 
-### (1) 외부 뉴스 분석
+#### (1) 외부 뉴스 분석
 - **NewsAPI / Naver**를 통해 최신 뉴스 수집  
 - **Azure OpenAI (GPT-4.1-mini)** 로 PEST·SWOT(외부) JSON 생성  
 
 
-### (2) 내부 문서 분석
+#### (2) 내부 문서 분석
 - 문서 업로드 → **Azure Blob Storage** 저장  
 - **Azure AI Search** 인덱싱 및 **REST Search API** 호출  
 - **GPT-4.1-mini** 로 내부 문서 요약 및 강·약점 생성  
 
 
-### (3) 교차 분석 및 전략 도출
+#### (3) 교차 분석 및 전략 도출
 - 외부(PEST·SWOT) + 내부 요약 결합  
 - **벤치마킹 · 협력안 · 차별화 · KPI** 자동 도출  
 
 
-### (4) 결과 시각화 (Streamlit UI)
+#### (4) 결과 시각화 (Streamlit UI)
 - 탭별로 결과 표시  
   → **외부 뉴스 / 내부 문서 / 통합 인사이트**
 
