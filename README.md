@@ -130,12 +130,10 @@
 
 
 ### 🚀 특징 및 확장성
-- **Azure-native RAG 파이프라인**으로 Grounded 분석 수행  
-- **모든 결과를 Streamlit UI에서 시각화**  
-- **향후 On Your Data 및 LangChain 기반 분석 고도화 예정**  
-- **Azure Function / App Service 기반 확장 구조**로 멀티유저·대용량 처리까지 고려
-
-
+- **AI Search + OpenAI** 결합으로 구성된 **RAG 기반 전략 의사결정 지원 시스템**  
+- 모든 결과를 **JSON 구조로 자동화**하여 향후 **PDF·Word·Excel 리포트 생성** 및 **LangChain 기반 체인 분석**으로 확장 가능  
+- **Azure App Service / Function** 기반 구조로 멀티 유저 및 비동기 처리 확장 용이  
+- 기술적으로는 **확장 가능한 Azure-native 구조**, 비즈니스적으로는 **전략 기획 업무를 자동화하는 AI Copilot** 형태로 발전 가능
 
 ---
 
