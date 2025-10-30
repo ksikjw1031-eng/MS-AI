@@ -62,11 +62,11 @@ Streamlit App ──> 결과 탭(문서요약 / 강점·약점 / 우선제안)
 
 ## 4. 시스템 동작 흐름
 ```text
- \1) 내부 문서 업로드 → Blob 저장  
-\2) Azure AI Search 인덱싱 및 /docs/search API 조회  
-\3) 외부 뉴스 수집 (NewsAPI/Naver API)  
-\4) AOAI가 뉴스+문서 기반으로 JSON 분석 (PEST·SWOT·KPI)  
-\5) Streamlit UI에 카드형으로 시각화 (문서요약 / 강점·약점 / 우선제안)
+1) 내부 문서 업로드 → Blob 저장  
+2) Azure AI Search 인덱싱 및 /docs/search API 조회  
+3) 외부 뉴스 수집 (NewsAPI/Naver API)  
+4) AOAI가 뉴스+문서 기반으로 JSON 분석 (PEST·SWOT·KPI)  
+5) Streamlit UI에 카드형으로 시각화 (문서요약 / 강점·약점 / 우선제안)
 ```
 
 ---
