@@ -30,8 +30,7 @@
 ---
 
 ## 3. 기술 아키텍처 (Architecture Overview)
-
-### 전체 구조도
+### 3-1. 전체 구조도
 ```text
 사용자 (Streamlit UI)
         │
@@ -57,11 +56,10 @@
         ▼
  Streamlit App → 결과 탭 (문서요약 / 강점·약점 / 우선제안)
 
-
 ```
 ---
 
-## 4. 시스템 동작 흐름 (System Workflow)
+### 3-2. 시스템 동작 흐름 (System Workflow)
 
 #### (1) 외부 뉴스 분석
 - **NewsAPI / Naver**를 통해 최신 뉴스 수집  
@@ -85,6 +83,18 @@
 
 ---
 
+## 4. 주요 기술 구성 요소
+
+| 구성 요소 | 역할 | 특징 |
+| --- | --- | --- |
+| **Azure Blob Storage** | 내부 문서 업로드 및 원본 저장 | 기업 내부 문서 관리용 |
+| **Azure AI Search** | 문서 조각(content 필드) 색인 및 검색 | /docs/search API를 직접 호출해 커스텀 RAG 구현 |
+| **Azure OpenAI Service (AOAI)** | GPT-4.1-mini 모델로 분석·요약·전략 생성 | Azure 환경에서 GPT 모델 호출 |
+| **Streamlit** | 인터랙티브 UI, 카드형 디자인 | 시각화 및 입력 흐름 관리 |
+| **NewsAPI / Naver API** | 외부 뉴스 데이터 수집 | 한글 기사 중심 |
+| **Python SDK / OpenAI SDK** | AOAI 호출 및 JSON 파싱 | 구조화된 응답(JSON 스키마) 사용 |
+
+---
 
 ## 5. Azure 기술 활용 포인트
 | 영역                    | 활용 포인트                                |
