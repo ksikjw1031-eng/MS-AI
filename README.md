@@ -62,11 +62,11 @@ Streamlit App ──> 결과 탭(문서요약 / 강점·약점 / 우선제안)
 
 ## 4. 시스템 동작 흐름
 ```text
-① 내부 문서 업로드 → Blob 저장  
-② Azure AI Search 인덱싱 및 /docs/search API 조회  
-③ 외부 뉴스 수집 (NewsAPI/Naver API)  
-④ AOAI가 뉴스+문서 기반으로 JSON 분석 (PEST·SWOT·KPI)  
-⑤ Streamlit UI에 카드형으로 시각화 (문서요약 / 강점·약점 / 우선제안)
+ \1) 내부 문서 업로드 → Blob 저장  
+\2) Azure AI Search 인덱싱 및 /docs/search API 조회  
+\3) 외부 뉴스 수집 (NewsAPI/Naver API)  
+\4) AOAI가 뉴스+문서 기반으로 JSON 분석 (PEST·SWOT·KPI)  
+\5) Streamlit UI에 카드형으로 시각화 (문서요약 / 강점·약점 / 우선제안)
 ```
 
 ---
@@ -113,7 +113,6 @@ Streamlit App ──> 결과 탭(문서요약 / 강점·약점 / 우선제안)
 <br>
 
 ## 8. 프로젝트 핵심 요약 (Summary)
-
 본 프로젝트는 **Azure AI 생태계**를 기반으로  
 외부 뉴스와 내부 문서를 통합 분석하여  
 기업의 **PEST·SWOT 및 전략 인사이트**를 자동 생성하는 **AI 시스템**입니다.  
@@ -124,7 +123,6 @@ Streamlit App ──> 결과 탭(문서요약 / 강점·약점 / 우선제안)
 
 모든 결과는 **Streamlit UI**에서 시각화되며,  
 향후 **On Your Data** 및 **LangChain 기반 분석 고도화**로 확장할 예정입니다.
-
 
 ---
 <br>
