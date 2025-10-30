@@ -29,48 +29,59 @@
 
 ---
 
-## 3️. 기술 아키텍처
+## 3. 기술 아키텍처 (Architecture Overview)
 
 ### 전체 구조도
-
-
 ```text
 사용자 (Streamlit UI)
         │
         ▼
- ┌────────────── 외부 뉴스 파이프라인 ────────────────┐
- │  NewsAPI/Naver → (전처리) → Azure OpenAI          │
- │     └ GPT-4.1-mini: PEST·SWOT(외부) JSON 생성     │
- └───────────────────────────────────────────────────┘
+ ┌─────────────── 외부 뉴스 파이프라인 ─────────────────┐
+ │  NewsAPI / Naver → (전처리) → Azure OpenAI          │
+ │     └ GPT-4.1-mini: PEST·SWOT(외부) JSON 생성       │
+ └────────────────────────────────────────────────────┘
         │
-        │ (병렬)
+        │  (병렬)
         ▼
  ┌─────────────── 내부 문서 파이프라인 ────────────────┐
  │  Blob Storage 업로드 → Azure AI Search(인덱싱/검색) │
  │     → Azure OpenAI                                 │
- │     └ GPT-4.1-mini: 문서 요약·내부 강/약점 생성      │
+ │     └ GPT-4.1-mini: 문서 요약 및 내부 강·약점 생성   │
  └────────────────────────────────────────────────────┘
         │
         ▼
-[교차 분석 / 인사이트 엔진]
-- 외부(PEST·SWOT) + 내부 요약 결합
-- 벤치마킹·협력안·차별화·KPI 도출 (JSON)
+ [교차 분석 / 인사이트 엔진]
+ - 외부(PEST·SWOT) + 내부 요약 결합
+ - 벤치마킹·협력안·차별화·KPI 도출 (JSON)
         │
         ▼
-Streamlit App ──> 결과 탭(문서요약 / 강점·약점 / 우선제안)
+ Streamlit App → 결과 탭 (문서요약 / 강점·약점 / 우선제안)
+
 
 ```
-
 ---
 
 ## 4. 시스템 동작 흐름 (System Workflow)
-| 단계                  | 주요 처리 내용                                                                                       | 활용 기술 / 구성 요소                                       |
-| ------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| **① 외부 뉴스 분석**      | NewsAPI·Naver에서 뉴스 수집 → Azure OpenAI(GPT-4.1-mini)로 PEST·SWOT(외부) JSON 생성                      | Azure OpenAI Service                                |
-| **② 내부 문서 분석**      | 문서 업로드 → Blob Storage 저장 → Azure AI Search 인덱싱 및 REST Search API 호출 → GPT-4.1-mini로 요약·강·약점 생성 | Azure Blob Storage · Azure AI Search · Azure OpenAI |
-| **③ 교차 분석 및 전략 도출** | 외부(PEST·SWOT) + 내부 요약 결합 → 벤치마킹·협력안·차별화·KPI 자동 생성                                              | Azure OpenAI (RAG 파이프라인)                            |
-| **④ 시각화 및 결과 표시**   | Streamlit UI 탭별 결과 표시 (외부 뉴스 / 내부 문서 / 통합 인사이트)                                                | Streamlit App UI                                    |
 
+### (1) 외부 뉴스 분석
+- **NewsAPI / Naver**를 통해 최신 뉴스 수집  
+- **Azure OpenAI (GPT-4.1-mini)** 로 PEST·SWOT(외부) JSON 생성  
+
+
+### (2) 내부 문서 분석
+- 문서 업로드 → **Azure Blob Storage** 저장  
+- **Azure AI Search** 인덱싱 및 **REST Search API** 호출  
+- **GPT-4.1-mini** 로 내부 문서 요약 및 강·약점 생성  
+
+
+### (3) 교차 분석 및 전략 도출
+- 외부(PEST·SWOT) + 내부 요약 결합  
+- **벤치마킹 · 협력안 · 차별화 · KPI** 자동 도출  
+
+
+### (4) 결과 시각화 (Streamlit UI)
+- 탭별로 결과 표시  
+  → **외부 뉴스 / 내부 문서 / 통합 인사이트**
 
 ---
 
@@ -99,31 +110,31 @@ Streamlit App ──> 결과 탭(문서요약 / 강점·약점 / 우선제안)
 
 ---
 
-
 ## 7. 고도화 계획 (향후 발전 방향)
 
-| 방향                           | 내용                                                   |
-| ---------------------------- | ---------------------------------------------------- |
-| 📊 **리포트 자동화**          | 분석 결과를 PDF/PPT 보고서 형태로 자동 생성 |
-| 📂 **문서 조회 확장**              | **Word, Excel 원문 미리보기 및 요약 분석** 기능 추가            |
-| ⚙️ **RAG On Your Data**      | Office 문서 자동 인덱싱 및 Azure Document Intelligence 연동    |
-| 🧩 **LangChain / LangGraph** | PEST → SWOT → KPI 단계별 프롬프트 체인 구성                     |
-| 🚀 **성능 및 확장성 강화**           | Streamlit → FastAPI 구조 분리, Azure Cache 도입 예정         |
-| 🧠 **프롬프트 품질 관리**            | LangFuse로 AI 응답 품질 추적 및 버전 관리                        |
-
+| 방향 | 내용 |
+|------|------|
+| 📊 **리포트 자동화** | 분석 결과를 **PDF / Word / Excel** 등 다양한 형식으로 자동 추출 |
+| 📂 **문서 조회 확장** | **Word·Excel 원문 미리보기 및 요약 분석** 기능 추가 |
+| ⚙️ **RAG On Your Data** | Office 문서 자동 인덱싱 및 **Azure Document Intelligence** 연동 |
+| 🧩 **LangChain / LangGraph 고도화** | PEST → SWOT → KPI 단계별 **프롬프트 체인 구성**으로 분석 정밀도 향상 |
 ---
 
 ## 8. 프로젝트 핵심 요약 (Summary)
-본 프로젝트는 **Azure AI 생태계**를 기반으로  
-외부 뉴스와 내부 문서를 통합 분석하여  
-기업의 **PEST·SWOT 및 전략 인사이트**를 자동 생성하는 **AI 시스템**입니다.  
 
-**Azure Blob Storage → Azure AI Search → Azure OpenAI(AOAI)** 까지  
-완전한 **Azure-native 파이프라인**을 구성하였으며,  
-직접 **RAG 구조를 구현**해 GPT 모델이 **Grounded된 분석**을 수행합니다.  
+### 💡 핵심 구조
+- **Azure Blob Storage** → 내부 문서 업로드 및 저장  
+- **Azure AI Search** → 문서 인덱싱 및 검색  
+- **Azure OpenAI (GPT-4.1-mini)** → 분석·요약·전략 생성  
+- **Streamlit UI** → 결과 시각화 (문서요약 / 강점·약점 / 우선제안)
 
-모든 결과는 **Streamlit UI**에서 시각화되며,  
-향후 **On Your Data** 및 **LangChain 기반 분석 고도화**로 확장할 예정입니다.
+
+### 🚀 특징 및 확장성
+- **Azure-native RAG 파이프라인**으로 Grounded 분석 수행  
+- **모든 결과를 Streamlit UI에서 시각화**  
+- **향후 On Your Data 및 LangChain 기반 분석 고도화 예정**
+
+
 
 ---
 
